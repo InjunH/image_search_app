@@ -69,7 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSpacing: 16),
                 itemBuilder: (context, index) {
                   final photo = _photos[index];
-                  return PhotoWidget(photo: photo);
+                  return PhotoWidget(
+                    photo: photo,
+                    api: PixabayApi(),
+                  );
                   // return Container();
                 }),
           )
