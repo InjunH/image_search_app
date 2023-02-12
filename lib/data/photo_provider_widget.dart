@@ -1,10 +1,17 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:image_search_app/data/api.dart';
 
+import '../model/Photo.dart';
+
 class PhotoProvider extends InheritedElement {
   final PixabayApi api;
+
+  final _photoStreamController = StreamController<List<Photo>>()..add([]);
+  Stream<List<Photo>> get photoStream => _photoStreamController.stream;
+
   PhotoProvider({
     Key? key,
     required this.api,
@@ -16,6 +23,11 @@ class PhotoProvider extends InheritedElement {
         context.dependOnInheritedWidgetOfExactType<PhotoProvider>();
     assert(result != null, 'No PixabayApi fount in context');
     return result!;
+  }
+
+  Future<void> fetch(String query) async {
+    final result = await api.fetch(query);
+    _photoStreamController.add(result);
   }
 
   @override
