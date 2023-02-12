@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/api.dart';
-import 'package:image_search_app/data/photo_provider_widget.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
 
+import '../data/photo_provider_widget.dart';
+import '../data/pixabay_api.dart';
 import '../model/Photo.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final photoProvider = PhotoProvider.of(context);
+    final viewModel = PhotoProvider.of(context).viewModel;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
                         onPressed: () async {
-                          photoProvider.fetch(_controller.text);
+                          viewModel.fetch(_controller.text);
                         },
                         icon: const Icon(Icons.search)),
                     border: const OutlineInputBorder(
@@ -54,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             BorderRadius.all(Radius.circular(10.0))))),
           ),
           StreamBuilder<List<Photo>>(
-              stream: photoProvider.photoStream,
+              stream: viewModel.photoStream,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (!snapshot.hasData) {
                   return const CircularProgressIndicator();
                 }
                 final photos = snapshot.data!;

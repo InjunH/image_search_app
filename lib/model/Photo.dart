@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Photo {
   Photo({
     required this.id,
@@ -96,5 +97,64 @@ class Photo {
     _data['user'] = user;
     _data['userImageURL'] = userImageURL;
     return _data;
+  }
+
+  @override
+  bool operator ==(covariant Photo other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.pageURL == pageURL &&
+        other.type == type &&
+        other.tags == tags &&
+        other.previewURL == previewURL &&
+        other.previewWidth == previewWidth &&
+        other.previewHeight == previewHeight &&
+        other.webformatURL == webformatURL &&
+        other.webformatWidth == webformatWidth &&
+        other.webformatHeight == webformatHeight &&
+        other.largeImageURL == largeImageURL &&
+        other.imageWidth == imageWidth &&
+        other.imageHeight == imageHeight &&
+        other.imageSize == imageSize &&
+        other.views == views &&
+        other.downloads == downloads &&
+        other.collections == collections &&
+        other.likes == likes &&
+        other.comments == comments &&
+        other.userId == userId &&
+        other.user == user &&
+        other.userImageURL == userImageURL;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        pageURL.hashCode ^
+        type.hashCode ^
+        tags.hashCode ^
+        previewURL.hashCode ^
+        previewWidth.hashCode ^
+        previewHeight.hashCode ^
+        webformatURL.hashCode ^
+        webformatWidth.hashCode ^
+        webformatHeight.hashCode ^
+        largeImageURL.hashCode ^
+        imageWidth.hashCode ^
+        imageHeight.hashCode ^
+        imageSize.hashCode ^
+        views.hashCode ^
+        downloads.hashCode ^
+        collections.hashCode ^
+        likes.hashCode ^
+        comments.hashCode ^
+        userId.hashCode ^
+        user.hashCode ^
+        userImageURL.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Photo(id: $id)';
   }
 }
