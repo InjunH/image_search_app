@@ -2,14 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_search_app/data/api.dart';
+import 'package:image_search_app/data/photo_provider_widget.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
 
 import '../model/Photo.dart';
 
 class HomeScreen extends StatefulWidget {
-  final PixabayApi api;
-
-  const HomeScreen({super.key, required this.api});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final photoProvider = PhotoProvider.of(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           print(_controller.text);
                           final photos =
-                              await widget.api.fetch(_controller.text);
+                              await photoProvider.api.fetch(_controller.text);
                           setState(() {
                             _photos = photos;
                           });
