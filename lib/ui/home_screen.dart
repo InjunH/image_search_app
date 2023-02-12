@@ -7,15 +7,15 @@ import 'package:image_search_app/ui/widget/photo_widget.dart';
 import '../model/Photo.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final PixabayApi api;
+
+  const HomeScreen({super.key, required this.api});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final api = PixabayApi();
-
   List<Photo> _photos = [];
 
   final _controller = TextEditingController();
@@ -48,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     suffixIcon: IconButton(
                         onPressed: () async {
                           print(_controller.text);
-                          final photos = await api.fetch(_controller.text);
+                          final photos =
+                              await widget.api.fetch(_controller.text);
                           setState(() {
                             _photos = photos;
                           });
