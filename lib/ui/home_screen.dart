@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:image_search_app/ui/home_view_model.dart';
 import 'package:image_search_app/ui/widget/photo_widget.dart';
+import 'package:provider/provider.dart';
 
-import '../data/photo_provider_widget.dart';
 import '../data/pixabay_api.dart';
 import '../model/Photo.dart';
 
@@ -25,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = PhotoProvider.of(context).viewModel;
+    // final viewModel = PhotoProvider.of(context).viewModel;
+    // final viewModel = Provider.of<HomeViewModel>(context);
+    final viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: AppBar(
