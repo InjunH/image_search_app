@@ -28,7 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // final viewModel = PhotoProvider.of(context).viewModel;
     // final viewModel = Provider.of<HomeViewModel>(context);
-    final viewModel = context.watch<HomeViewModel>();
+
+    /// watch 로 감싸면서 전체 빌드가 다시 되면서 성능 이슈가 생길 수 있음
+    /// Consumer 로 사용하여 해결
+    /// 그러나 watch 사용하는 것도 나쁘지 않다.
+    // final viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,39 +53,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: InputDecoration(
                     suffixIcon: IconButton(
                         onPressed: () async {
-                          viewModel.fetch(_controller.text);
+                          // viewModel.fetch(_controller.text);
+
+                          /// context.read : 한번만 읽을 때 사용
+                          context.read<HomeViewModel>().fetch(_controller.text);
                         },
                         icon: const Icon(Icons.search)),
                     border: const OutlineInputBorder(
                         borderRadius:
                             BorderRadius.all(Radius.circular(10.0))))),
           ),
-          StreamBuilder<List<Photo>>(
-              stream: viewModel.photoStream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
-                final photos = snapshot.data!;
-                return Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: photos.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16),
-                      itemBuilder: (context, index) {
-                        final photo = photos[index];
-                        return PhotoWidget(
-                          photo: photo,
-                          api: PixabayApi(),
-                        );
-                        // return Container();
-                      }),
-                );
-              })
+          // StreamBuilder<List<Photo>>(
+          //     stream: viewModel.photoStream,
+          //     builder: (context, snapshot) {
+          //       if (!snapshot.hasData) {
+          //         return const CircularProgressIndicator();
+          //       }
+          //       final photos = snapshot.data!;
+          //       return Expanded(
+          //         child: GridView.builder(
+          //             padding: const EdgeInsets.all(16),
+          //             itemCount: photos.length,
+          //             gridDelegate:
+          //                 const SliverGridDelegateWithFixedCrossAxisCount(
+          //                     crossAxisCount: 2,
+          //                     crossAxisSpacing: 16,
+          //                     mainAxisSpacing: 16),
+          //             itemBuilder: (context, index) {
+          //               final photo = photos[index];
+          //               return PhotoWidget(
+          //                 photo: photo,
+          //                 api: PixabayApi(),
+          //               );
+          //               // return Container();
+          //             }),
+          //       );
+          //     })
+          Consumer<HomeViewModel>(
+            builder: (_, viewModel, child) {
+              return Expanded(
+                child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: viewModel.photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16),
+                    itemBuilder: (context, index) {
+                      final photo = viewModel.photos[index];
+                      return PhotoWidget(
+                        photo: photo,
+                        api: PixabayApi(),
+                      );
+                      // return Container();
+                    }),
+              );
+            },
+          )
         ],
       ),
     );

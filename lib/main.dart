@@ -21,7 +21,12 @@ class MyApp extends StatelessWidget {
       ),
       // home: PhotoProvider(
       //     viewModel: HomeViewModel(PixabayApi()), child: const HomeScreen()),
-      home: Provider(
+      /// Provider : 변경을 감지할 수 없다.
+      // home: Provider(
+      //     create: (_) => HomeViewModel(PixabayApi()),
+      //     child: const HomeScreen()),
+      /// ChangeNotifierProvider : 변경을 감지할 수 있다.
+      home: ChangeNotifierProvider(
           create: (_) => HomeViewModel(PixabayApi()),
           child: const HomeScreen()),
     );
