@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     /// watch 로 감싸면서 전체 빌드가 다시 되면서 성능 이슈가 생길 수 있음
     /// Consumer 로 사용하여 해결
     /// 그러나 watch 사용하는 것도 나쁘지 않다.
-    // final viewModel = context.watch<HomeViewModel>();
+    final viewModel = context.watch<HomeViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -89,28 +89,45 @@ class _HomeScreenState extends State<HomeScreen> {
           //             }),
           //       );
           //     })
-          Consumer<HomeViewModel>(
-            builder: (_, viewModel, child) {
-              return Expanded(
-                child: GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: viewModel.photos.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16),
-                    itemBuilder: (context, index) {
-                      final photo = viewModel.photos[index];
-                      return PhotoWidget(
-                        photo: photo,
-                        api: PixabayApi(),
-                      );
-                      // return Container();
-                    }),
-              );
-            },
+          Expanded(
+            child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: viewModel.photos.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16),
+                itemBuilder: (context, index) {
+                  final photo = viewModel.photos[index];
+                  return PhotoWidget(
+                    photo: photo,
+                    api: PixabayApi(),
+                  );
+                  // return Container();
+                }),
           )
+          // Consumer<HomeViewModel>(
+          //   builder: (_, viewModel, child) {
+          //     return Expanded(
+          //       child: GridView.builder(
+          //           padding: const EdgeInsets.all(16),
+          //           itemCount: viewModel.photos.length,
+          //           gridDelegate:
+          //               const SliverGridDelegateWithFixedCrossAxisCount(
+          //                   crossAxisCount: 2,
+          //                   crossAxisSpacing: 16,
+          //                   mainAxisSpacing: 16),
+          //           itemBuilder: (context, index) {
+          //             final photo = viewModel.photos[index];
+          //             return PhotoWidget(
+          //               photo: photo,
+          //               api: PixabayApi(),
+          //             );
+          //             // return Container();
+          //           }),
+          //     );
+          //   },
+          // )
         ],
       ),
     );
