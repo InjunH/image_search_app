@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/photo_api_repository.dart';
+import 'package:image_search_app/domain/repository/photo_api_repository.dart';
 
-import '../model/Photo.dart';
+import '../../domain/model/Photo.dart';
 
 class HomeViewModel with ChangeNotifier {
   final PhotoApiRepository repository;

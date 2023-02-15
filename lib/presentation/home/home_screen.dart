@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:image_search_app/ui/home_view_model.dart';
-import 'package:image_search_app/ui/widget/photo_widget.dart';
+import 'package:image_search_app/data/data_sourece/pixabay_api.dart';
+import 'package:image_search_app/presentation/home/component/photo_widget.dart';
+import 'package:image_search_app/presentation/home/home_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../data/pixabay_api.dart';
-import '../model/Photo.dart';
+import '../../data/repository/photo_api_repository_impl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   final photo = viewModel.photos[index];
                   return PhotoWidget(
                     photo: photo,
-                    api: PixabayApi(),
                   );
                   // return Container();
                 }),

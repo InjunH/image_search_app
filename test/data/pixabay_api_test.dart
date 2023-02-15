@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/testing.dart';
-import 'package:image_search_app/data/pixabay_api.dart';
+import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
