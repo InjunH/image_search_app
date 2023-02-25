@@ -1,5 +1,7 @@
-import '../model/Photo.dart';
+import 'package:image_search_app/data/data_sourece/result.dart';
+
+import '../model/photo.dart';
 
 abstract class PhotoApiRepository {
-  Future<List<Photo>> fetch(String qurey);
+  Future<Result<List<Photo>>> fetch(String qurey);
 }
