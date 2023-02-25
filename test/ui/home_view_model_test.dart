@@ -1,87 +1,88 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_search_app/domain/repository/photo_api_repository.dart';
-import 'package:image_search_app/data/repository/photo_api_repository_impl.dart';
+import 'package:image_search_app/data/data_sourece/result.dart';
 import 'package:image_search_app/domain/model/photo.dart';
+import 'package:image_search_app/domain/repository/photo_api_repository.dart';
+import 'package:image_search_app/domain/use_case/get_photos_use_case.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
 
 void main() {
-  test('Stream이 잘 동작해야 한다.', () async {
-    // final viewModel = HomeViewModel(FakePhotoApiRepository());
+  test('Stream이 잘 동작해야 한다', () async {
+    final viewModel = HomeViewModel(GetPhotosUseCase(FakePhotoApiRepository()));
 
-    // await viewModel.fetch('apple');
+    await viewModel.fetch('apple');
 
-    // final result = fakeJson.map((e) => Photo.fromJson(e)).toList();
-    // expect(viewModel.photos, result);
+    final List<Photo> result = fakeJson.map((e) => Photo.fromJson(e)).toList();
+
+    expect(viewModel.state.photos, result);
   });
 }
 
-// class FakePhotoApiRepository extends PhotoApiRepository {
-//   @override
-//   Future<List<Photo>> fetch(String qurey) async {
-//     Future.delayed(const Duration(milliseconds: 500));
-//     return fakeJson.map((e) => Photo.fromJson(e)).toList();
-//   }
-// }
+class FakePhotoApiRepository extends PhotoApiRepository {
+  @override
+  Future<Result<List<Photo>>> fetch(String query) async {
+    Future.delayed(const Duration(milliseconds: 500));
 
-// List<Map<String, dynamic>> fakeJson = [
-//   {
-//     "id": 634572,
-//     "pageURL":
-//         "https://pixabay.com/photos/apples-fruits-red-ripe-vitamins-634572/",
-//     "type": "photo",
-//     "tags": "apples, fruits, red",
-//     "previewURL":
-//         "https://cdn.pixabay.com/photo/2015/02/13/00/43/apples-634572_150.jpg",
-//     "previewWidth": 100,
-//     "previewHeight": 150,
-//     "webformatURL":
-//         "https://pixabay.com/get/ge615f8e23476d03943c2e54bc4d843c1e5b88ed138f6de0cde34a045e6e52ae1eee96727ce1f685fa187c80d60070edd_640.jpg",
-//     "webformatWidth": 427,
-//     "webformatHeight": 640,
-//     "largeImageURL":
-//         "https://pixabay.com/get/g1a5ee97ed0bd85479a83d21b4b09240657cc9ee93c6222958c33e8c1922f158cbc0cd81457b0b5039ed2b13358f01d78380291f2a4ab0df65f5b8f23da28c2b8_1280.jpg",
-//     "imageWidth": 3345,
-//     "imageHeight": 5017,
-//     "imageSize": 811238,
-//     "views": 465371,
-//     "downloads": 270059,
-//     "collections": 1258,
-//     "likes": 2347,
-//     "comments": 192,
-//     "user_id": 752536,
-//     "user": "Desertrose7",
-//     "userImageURL":
-//         "https://cdn.pixabay.com/user/2016/03/14/13-25-18-933_250x250.jpg"
-//   },
-//   {
-//     "id": 1868496,
-//     "pageURL":
-//         "https://pixabay.com/photos/apple-computer-desk-workspace-1868496/",
-//     "type": "photo",
-//     "tags": "apple, computer, desk",
-//     "previewURL":
-//         "https://cdn.pixabay.com/photo/2016/11/29/08/41/apple-1868496_150.jpg",
-//     "previewWidth": 150,
-//     "previewHeight": 99,
-//     "webformatURL":
-//         "https://pixabay.com/get/gd7a0e28e2936ce00634d02d2ab22cdcb040f32c459139327d42cedebf88919439e257241e2744286d0bf5aade84f9a9eda718dd7e04de53b0778576a210bd8f4_640.jpg",
-//     "webformatWidth": 640,
-//     "webformatHeight": 426,
-//     "largeImageURL":
-//         "https://pixabay.com/get/gac82ca1dc32fe326a3b4be896c7278014dcf6d5ddfea4be1950411314d839e36d6bd021c3d3afab7bf6c9e3f5fe77dfd849cd90d0d37b110d17e98675689bf57_1280.jpg",
-//     "imageWidth": 5184,
-//     "imageHeight": 3456,
-//     "imageSize": 2735519,
-//     "views": 672603,
-//     "downloads": 488534,
-//     "collections": 1361,
-//     "likes": 1019,
-//     "comments": 272,
-//     "user_id": 2286921,
-//     "user": "Pexels",
-//     "userImageURL":
-//         "https://cdn.pixabay.com/user/2016/03/26/22-06-36-459_250x250.jpg"
-//   },
-// ];
+    return Result.success(fakeJson.map((e) => Photo.fromJson(e)).toList());
+  }
+}
+
+List<Map<String, dynamic>> fakeJson = [
+  {
+    "id": 410311,
+    "pageURL":
+        "https://pixabay.com/photos/iphone-hand-screen-smartphone-apps-410311/",
+    "type": "photo",
+    "tags": "iphone, hand, screen",
+    "previewURL":
+        "https://cdn.pixabay.com/photo/2014/08/05/10/27/iphone-410311_150.jpg",
+    "previewWidth": 150,
+    "previewHeight": 99,
+    "webformatURL":
+        "https://pixabay.com/get/ga40944969ab1ca0cb5e5e2a753382c5ef38aa9b1bdf195f44a6e8c7def03f5b2ce08c74211f5bd254565642907f5e7b5_640.jpg",
+    "webformatWidth": 640,
+    "webformatHeight": 426,
+    "largeImageURL":
+        "https://pixabay.com/get/gac97151d90f6f74f39ba9a6013d97a3e0c8b3b2673356bef20a65b9a253d439913d8d3566a6e8485773b9aea90170c38a538a3582b0a2af3e51efe53ebc8885b_1280.jpg",
+    "imageWidth": 1920,
+    "imageHeight": 1280,
+    "imageSize": 416413,
+    "views": 441374,
+    "downloads": 213676,
+    "collections": 2913,
+    "likes": 573,
+    "comments": 146,
+    "user_id": 264599,
+    "user": "JESHOOTS-com",
+    "userImageURL":
+        "https://cdn.pixabay.com/user/2014/06/08/15-27-10-248_250x250.jpg"
+  },
+  {
+    "id": 620817,
+    "pageURL":
+        "https://pixabay.com/photos/office-notes-notepad-entrepreneur-620817/",
+    "type": "photo",
+    "tags": "office, notes, notepad",
+    "previewURL":
+        "https://cdn.pixabay.com/photo/2015/02/02/11/08/office-620817_150.jpg",
+    "previewWidth": 150,
+    "previewHeight": 99,
+    "webformatURL":
+        "https://pixabay.com/get/g5dce019c1f10360baae95dd11b0a474f4a88609aa453b6fb63eb21af5ced9f66512d0eecdb37d13d65aece68c04ac30f_640.jpg",
+    "webformatWidth": 640,
+    "webformatHeight": 425,
+    "largeImageURL":
+        "https://pixabay.com/get/g288340ffe42c24238450b87b53b341663b8a4d5a34cd29ddfe5bfb2ea8ebad94f954e901100c4cd89e7e821fb78c1262034505ae2109e88ecf14df55589fddb1_1280.jpg",
+    "imageWidth": 4288,
+    "imageHeight": 2848,
+    "imageSize": 2800224,
+    "views": 631369,
+    "downloads": 269069,
+    "collections": 3062,
+    "likes": 1062,
+    "comments": 242,
+    "user_id": 663163,
+    "user": "Firmbee",
+    "userImageURL":
+        "https://cdn.pixabay.com/user/2020/11/25/09-38-28-431_250x250.png"
+  },
+];

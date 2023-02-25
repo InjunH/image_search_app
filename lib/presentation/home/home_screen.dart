@@ -1,15 +1,12 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/data_sourece/pixabay_api.dart';
 import 'package:image_search_app/presentation/home/component/photo_widget.dart';
 import 'package:image_search_app/presentation/home/home_view_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/repository/photo_api_repository_impl.dart';
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -17,116 +14,84 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = TextEditingController();
+  StreamSubscription? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final viewModel = context.read<HomeViewModel>();
+      _subscription = viewModel.eventStream.listen((event) {
+        event.when(showSnackBar: (message) {
+          final snackBar = SnackBar(content: Text(message));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
+      });
+    });
+  }
 
   @override
   void dispose() {
+    _subscription?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = PhotoProvider.of(context).viewModel;
-    // final viewModel = Provider.of<HomeViewModel>(context);
-
-    /// watch 로 감싸면서 전체 빌드가 다시 되면서 성능 이슈가 생길 수 있음
-    /// Consumer 로 사용하여 해결
-    /// 그러나 watch 사용하는 것도 나쁘지 않다.
     final viewModel = context.watch<HomeViewModel>();
+    final state = viewModel.state;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         centerTitle: true,
-        elevation: 0,
         title: const Text(
           '이미지 검색 앱',
           style: TextStyle(color: Colors.black),
         ),
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        onPressed: () async {
-                          // viewModel.fetch(_controller.text);
-
-                          /// context.read : 한번만 읽을 때 사용
-                          context.read<HomeViewModel>().fetch(_controller.text);
-                        },
-                        icon: const Icon(Icons.search)),
-                    border: const OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(10.0))))),
+              controller: _controller,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    viewModel.fetch(_controller.text);
+                  },
+                  icon: const Icon(Icons.search),
+                ),
+              ),
+            ),
           ),
-          // StreamBuilder<List<Photo>>(
-          //     stream: viewModel.photoStream,
-          //     builder: (context, snapshot) {
-          //       if (!snapshot.hasData) {
-          //         return const CircularProgressIndicator();
-          //       }
-          //       final photos = snapshot.data!;
-          //       return Expanded(
-          //         child: GridView.builder(
-          //             padding: const EdgeInsets.all(16),
-          //             itemCount: photos.length,
-          //             gridDelegate:
-          //                 const SliverGridDelegateWithFixedCrossAxisCount(
-          //                     crossAxisCount: 2,
-          //                     crossAxisSpacing: 16,
-          //                     mainAxisSpacing: 16),
-          //             itemBuilder: (context, index) {
-          //               final photo = photos[index];
-          //               return PhotoWidget(
-          //                 photo: photo,
-          //                 api: PixabayApi(),
-          //               );
-          //               // return Container();
-          //             }),
-          //       );
-          //     })
-          Expanded(
-            child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: viewModel.photos.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16),
-                itemBuilder: (context, index) {
-                  final photo = viewModel.photos[index];
-                  return PhotoWidget(
-                    photo: photo,
-                  );
-                  // return Container();
-                }),
-          )
-          // Consumer<HomeViewModel>(
-          //   builder: (_, viewModel, child) {
-          //     return Expanded(
-          //       child: GridView.builder(
-          //           padding: const EdgeInsets.all(16),
-          //           itemCount: viewModel.photos.length,
-          //           gridDelegate:
-          //               const SliverGridDelegateWithFixedCrossAxisCount(
-          //                   crossAxisCount: 2,
-          //                   crossAxisSpacing: 16,
-          //                   mainAxisSpacing: 16),
-          //           itemBuilder: (context, index) {
-          //             final photo = viewModel.photos[index];
-          //             return PhotoWidget(
-          //               photo: photo,
-          //               api: PixabayApi(),
-          //             );
-          //             // return Container();
-          //           }),
-          //     );
-          //   },
-          // )
+          state.isLoading
+              ? const CircularProgressIndicator()
+              : Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: state.photos.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemBuilder: (context, index) {
+                      final photo = state.photos[index];
+                      return PhotoWidget(
+                        photo: photo,
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );
